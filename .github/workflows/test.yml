@@ -1,3 +1,10 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   # Job to find and list changed files
   changed_files:
