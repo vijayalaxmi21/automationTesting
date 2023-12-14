@@ -13,14 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-    - name: Set commit range and save to environment file
-      run: |
+      - name: Set commit range and save to environment file
+        run: |
           echo "Current Commit: ${{ github.sha }}"
           echo "Previous Commit: ${{ github.event.before }}"
           files=$(git diff --name-only ${{ github.event.before }} HEAD | grep '\.js$' || true)
           echo "Changed Files: $files"
           echo "FILES=$files" >> $GITHUB_ENV
-
 
       - name: Display changed files
         run: echo "$FILES"
