@@ -18,6 +18,10 @@ jobs:
         with:
           node-version: '14'
 
+      - name: Clear npm cache and update npm
+        run: |
+          npm cache clean -f
+          npm install -g npm@latest
       - name: Install dependencies
         run: |
           npm install --save-dev jest
