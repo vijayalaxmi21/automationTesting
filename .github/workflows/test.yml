@@ -19,7 +19,7 @@ jobs:
           node-version: '16.15.0'
 
       - name: Update npm
-        run: npm install -g npm@7.24.0  # Use a version compatible with Node.js 16.x
+        run: npm install -g npm@7.24.0
 
       - name: Install dependencies
         run: |
@@ -29,13 +29,14 @@ jobs:
       - name: Determine changed files
         id: changed-files
         run: |
-          echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.js$' || true)"
+          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.js$' || true)
+          echo "FILES=$files" >> $GITHUB_ENV
 
       - name: Run tests on changed files
         run: |
-          changed_files=$(echo "${{ steps.changed-files.outputs.files }}" | tr '\n' ' ')
-          if [ -n "$changed_files" ]; then
-            ./node_modules/jest/bin/jest.js $changed_files
+          source .env
+          if [ -n "$FILES" ]; then
+            ./node_modules/jest/bin/jest.js $FILES
           else
             echo "No JavaScript files changed. Skipping tests."
           fi
