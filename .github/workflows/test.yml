@@ -22,29 +22,12 @@ jobs:
         run: npm install -g npm@7.24.0
 
       - name: Install dependencies
+        run: npm install --save-dev jest
+
+      - name: Set commit range in .env
         run: |
-          npm install --save-dev jest
-          npm install
+          echo "FILES=\$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.js$' || true)" > .env
 
       - name: Debug Info
         run: |
-          echo "Current Commit: ${{ github.sha }}"
-          echo "Previous Commit: ${{ github.event.before }}"
-          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.js$' || true)
-          echo "Changed Files: $files"
-          echo "FILES=$files" >> $GITHUB_ENV
-
-      - name: Run tests on changed files
-        run: |
-          source .env
-          if [ -n "$FILES" ]; then
-            echo "Changed files: $FILES"
-            # You can loop through the changed files if needed
-            for file in $FILES; do
-              echo "Processing file: $file"
-              # Run any specific commands related to each changed file
-            done
-          else
-            echo "No JavaScript files changed. Skipping tests."
-          fi
-
+          echo "Current Commit: ${{ github.sha
