@@ -9,6 +9,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    outputs:
+      # Define the output variable FILES
+      id: files
+      # The value is the list of changed files
+      value: ${{ steps.set-files.outputs.files }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -24,16 +30,19 @@ jobs:
       - name: Install dependencies
         run: npm install --save-dev jest
 
-      - name: Run tests on changed files
-        run: |
-          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.js$' || true)
-          echo "FILES=$FILES" >> $GITHUB_ENV
+      - name: Set commit range
+        id: set-files
+        run: echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.js$' || true)" >> $GITHUB_ENV
+
+      - name: Display changed files
+        run: echo "${{ steps.set-files.outputs.files }}"
 
       - name: Run Jest tests
         run: |
-          source <(echo "FILES=${FILES}")
-          if [ -n "$FILES" ]; then
-            ./node_modules/jest/bin/jest.js $FILES
+          source <(echo "${{ steps.set-files.outputs.files }}")
+          if [ -n "$files" ]; then
+            echo "Changed files: $files"
+            ./node_modules/jest/bin/jest.js $files
           else
             echo "No JavaScript files changed. Skipping tests."
           fi
