@@ -32,14 +32,18 @@ jobs:
 
       - name: Set commit range
         id: set-files
-        run: echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.js$' || true)" >> $GITHUB_ENV
+        run: echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.js$' || true)"
 
       - name: Display changed files
         run: echo "${{ steps.set-files.outputs.files }}"
 
+      - name: Set output variable
+        id: output-files
+        run: echo "files=${{ steps.set-files.outputs.files }}" 
+
       - name: Run Jest tests
         run: |
-          source <(echo "${{ steps.set-files.outputs.files }}")
+          source <(echo "${{ steps.output-files.outputs.files }}")
           echo "Changed files: $files"
           if [ -n "$files" ]; then
             ./node_modules/jest/bin/jest.js $files
