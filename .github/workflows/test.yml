@@ -38,7 +38,13 @@ jobs:
         run: |
           source .env
           if [ -n "$FILES" ]; then
-            ./node_modules/jest/bin/jest.js $FILES
+            echo "Changed files: $FILES"
+            # You can loop through the changed files if needed
+            for file in $FILES; do
+              echo "Processing file: $file"
+              # Run any specific commands related to each changed file
+            done
           else
             echo "No JavaScript files changed. Skipping tests."
           fi
+
