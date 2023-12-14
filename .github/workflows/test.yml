@@ -24,17 +24,16 @@ jobs:
       - name: Install dependencies
         run: npm install --save-dev jest
 
-      - name: Set commit range in .env
-        run: echo "FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.js$' || true)" > .env
-
       - name: Run tests on changed files
         run: |
-          source .env
+          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.js$' || true)
+          echo "FILES=$FILES" >> $GITHUB_ENV
+
+      - name: Run Jest tests
+        run: |
+          source <(echo "FILES=${FILES}")
           if [ -n "$FILES" ]; then
             ./node_modules/jest/bin/jest.js $FILES
           else
             echo "No JavaScript files changed. Skipping tests."
           fi
-
-
-
