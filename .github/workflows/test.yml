@@ -40,8 +40,8 @@ jobs:
       - name: Run Jest tests
         run: |
           source <(echo "${{ steps.set-files.outputs.files }}")
+          echo "Changed files: $files"
           if [ -n "$files" ]; then
-            echo "Changed files: $files"
             ./node_modules/jest/bin/jest.js $files
           else
             echo "No JavaScript files changed. Skipping tests."
