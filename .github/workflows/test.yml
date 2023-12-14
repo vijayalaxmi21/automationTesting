@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  changed_files:
+ changed_files:
   runs-on: ubuntu-latest
   name: Test changed-files
   outputs:
@@ -23,7 +23,7 @@ jobs:
           echo "$file was changed"
         done
 
-run_tests:
+ run_tests:
   runs-on: ubuntu-latest
   name: Run tests
   needs: changed_files
@@ -41,4 +41,3 @@ run_tests:
         else
           echo "No JavaScript files changed. Skipping tests."
         fi
-
