@@ -1,6 +1,6 @@
 
-function substract(a, b) {
-    return a - b;
+function substract(a, b , c) {
+    return a - b - c;
 }
 
 module.exports = { substract };
