@@ -18,8 +18,18 @@ pipeline {
 
         stage('Run Selenium Tests') {
             steps {
-                // Run Selenium tests
-                sh 'npm test'
+                script {
+                    // Identify changed files
+                    def changedFiles = sh(script: 'git diff --name-only HEAD^ HEAD', returnStdout: true).trim().split('\n')
+
+                    // Run Selenium tests only if there are changes in test files
+                    if (changedFiles.any { it.endsWith('.spec.js') }) {
+                        echo 'Running Selenium tests...'
+                        sh 'npm test'
+                    } else {
+                        echo 'No changes in Selenium test files. Skipping tests.'
+                    }
+                }
             }
         }
 
